@@ -45,3 +45,20 @@ void update_brightness_level(int percentage){
 
 }
 
+
+
+int get_PWM_value2(const char* string) {
+    char* start_ptr = strchr(string, '{');
+    if (start_ptr == NULL) {
+        return 0; 
+    }
+
+    
+    char* end_ptr = strchr(start_ptr, '}');
+    if (end_ptr == NULL) {
+        return 0; 
+    }
+   
+    return atoi(start_ptr + 1);
+}
+

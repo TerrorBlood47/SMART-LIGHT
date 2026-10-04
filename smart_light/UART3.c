@@ -96,7 +96,7 @@ uint8_t UART4_GetChar (void)
 void UART4_GetString(char* buffer, int max_len)
 {
 		
-		int i = 0;
+	int i = 0;
 	while(47)
 	{		
 			char c = (char) UART4_GetChar();

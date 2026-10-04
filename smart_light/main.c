@@ -3,6 +3,7 @@
 #include "Delay.h"
 #include "UART2.h"
 #include "PWM.h"
+#include "Switch.h"
 #include<stdbool.h>
 #include<stdint.h>
 #include <math.h>
@@ -16,23 +17,6 @@
 #define MAX_STRING_LENGTH 1024U
 
 
-
-int get_PWM_value2(const char* string) {
-    char* start_ptr = strchr(string, '{');
-    if (start_ptr == NULL) {
-        return 0; 
-    }
-
-    
-    char* end_ptr = strchr(start_ptr, '}');
-    if (end_ptr == NULL) {
-        return 0; 
-    }
-   
-    return atoi(start_ptr + 1);
-}
-
-
 int main (void)
 {
 	SysClockConfig ();
@@ -41,7 +25,9 @@ int main (void)
 	
 	Uart4Config(); // for communicating with the bluetooth module
 	
-	PWM_init();
+	//PWM_init();
+	
+	GPIO_Init();
 	
 	Delay_ms(3000);
 	
@@ -49,25 +35,44 @@ int main (void)
 	UART2_SendString("Hello from UART2(TERMINAL)\r\n");
 	
 	
-	while (1)
+	/*
+	while(47){
+		
+		Power_OFF();
+		Delay_ms(5000);
+		
+		Power_ON();
+		Delay_ms(5000);    
+	}
+	*/
+	
+	
+	while (47)
 	{	
 		char buf2[MAX_STRING_LENGTH];
 		UART4_GetString(buf2, MAX_STRING_LENGTH);
+		UART2_SendString("HI\r\n");
+		//UART2_SendString(buf2);
 		
-		int pwm_value_in_percentage = get_PWM_value2(buf2);
-		update_brightness_level(pwm_value_in_percentage);
 		
-		if(pwm_value_in_percentage==0){
-			UART2_SendString("SOMETHING WRONG\r\n");
+		int value = get_value2(buf2);
+
+		if(value == 1){	//Power_OFF already
+			Power_ON();
+		}
+		else{
+			Power_OFF();
 		}
 		
 		UART2_SendString(buf2);
 		UART2_SendString("sent to terminal\r\n");
 		
-		UART4_SendString(buf2);
-
-		Delay_ms(1000);
+		//UART4_SendString(buf2);
+		
+		
+		Delay_ms(500);
 	
 	}
+
 	
 }
